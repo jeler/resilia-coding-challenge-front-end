@@ -1,24 +1,38 @@
-import logo from './logo.svg';
-import './App.css';
-
+import React from "react";
+import "./App.css";
+import { Card } from "@mui/material";
+import resilia_small from './resilia_small.jpeg';
+import { parseISO } from 'date-fns'
 function App() {
+  const [data, setData] = React.useState(null);
+
+  React.useEffect(() => {
+    fetch("/messages")
+      .then((res) => res.json())
+      .then((data) => {
+        setData(data)
+      });
+  }, []);
+  
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+     <div className="App-Container">
+       <header className="App-resilia-header">
+       <img src={resilia_small} className="App-resilia-logo" alt="resilia-logo"></img>
+       Notification Center
+       </header>
+       {data ? <div>
+       {data.map((message) => (
+         <Card variant="outlined">
+         <div key={message.message_id}>
+           <div><b>Message:</b> {message.message}</div>
+           <div><b>Created At:</b> {message.created_at}</div>
+         </div>
+         </Card>
+       ))}
+     </div>: 'Loading'}
+     
+   </div>
   );
 }
 
